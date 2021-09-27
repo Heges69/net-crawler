@@ -1,8 +1,12 @@
 const axios = require('axios').default
 const ping = require('ping')
-var first = 172;
-var second = 32;
-var third = 0;
+const fs = require('fs');
+const { mcInfo } = require('mc-info.js')
+const mcinfo = new mcInfo()
+
+var first = 207;
+var second = 244;
+var third = 225;
 var fourth = 0;
 async function scanIP(host){
     process.title = `Scanning ${host}`
@@ -35,14 +39,22 @@ function getIP(){
 (async () => {
     setInterval(() => {
         let ip = getIP()
-        scanIP(ip).then(res => {
-            console.log(res);
+        scanIP(ip).then(async res => {
             if(res){
-                console.log(`Found IP ${ip}`)
-                axios.post("dc webhook", {
-                    'content': `IP: ${ip}`
-                })
+                try{
+                    const server = await mcinfo.fetchServer(ip)
+                    //console.log(server)
+                    console.log(`Found IP ${ip}`)
+                    let data = fs.readFileSync('./output.txt', 'utf-8');
+                    data += `\n${ip}`;
+                    fs.writeFileSync('./output.txt', data)
+                    axios.post("Discord webhook url here", {
+                        'content': `Found server. IP: ${ip} Version: ${server.version}`
+                    })
+                }catch(e){
+                    console.log(`${ip} no server found`)
+                }    
             }
         })
-    }, 200)
+    }, 25)
 })()

@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Heges69/net-crawler#readme",
   "dependencies": {
     "axios": "^0.21.4",
+    "mc-info.js": "^0.0.1",
     "ping": "^0.4.1"
   }
 }
